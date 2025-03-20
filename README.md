@@ -53,9 +53,9 @@ This project is open-source under the **MIT License**.
 **📢 Join the Community**  
 🚀 Follow the project & discuss new features!  
 
-- Twitter: **Coming Soon**   
-- Discord: **Coming Soon**  
 - GitHub: **github.com/MindBlockLabs**  
+- Twitter: **Coming Soon**
+- https://t.me/+kjacdy68yfwwNTVk
 
 ---
 ```
