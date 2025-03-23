@@ -5,7 +5,7 @@ function App() {
   return (
     <>
       <div className='flex flex-col justify-center align-center'>
-        <p>Welcome to MindBlock</p>
+        <p className='text-lg'>Welcome to MindBlock</p>
       </div>
     </>
   )
