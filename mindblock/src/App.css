@@ -2,15 +2,14 @@
 @import "tailwindcss";
 
 @theme {
-  --font-primary: "Orbitron", sans-serif;
-  --font-secondary: "Inter", sans-serif;
-  --color-primary-dark: #0d0d0d;
-  --color-secondary-dark: #08080a;
-  --color-primary-glow: #4a00e0;
-  --color-secondary-glow: #00e5ff;
-  --color-accent: #ff0080;
-  --color-text: #ffff;
-  --color-gray: #212122;
+  --color-button-primary: linear-gradient(to right, #3b82f6, #9333ea);
+  --color-button-primary-hover: linear-gradient(to right, #2563eb, #7e22ce);
+  --color-button-secondary: #1f2937;
+  --color-button-secondary-hover: #374151;
+  --color-button-outlined: transparent;
+  --color-button-outlined-hover: rgba(255, 255, 255, 0.1);
+  --color-button-ghost: transparent;
+  --color-button-ghost-hover: rgba(255, 255, 255, 0.05);
 }
 .border-hidden {
   border-color: transparent !important;
