@@ -13,3 +13,41 @@
   --color-text: #ffff;
   --color-gray: #212122;
 }
+.border-hidden {
+  border-color: transparent !important;
+}
+.glow-border::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: 0.375rem;
+  background: linear-gradient(
+    270deg,
+    var(--color-primary-glow),
+    var(--color-secondary-glow),
+    var(--color-primary-glow)
+  );
+  background-size: 300% 300%;
+  z-index: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease-in-out;
+}
+
+.animate-glow::before {
+  opacity: 1;
+  animation: border-shine 1.4s ease-in-out forwards;
+}
+
+.fade-out-glow::before {
+  opacity: 0;
+}
+
+@keyframes border-shine {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
