@@ -3,10 +3,6 @@ import { GameFeatureCard } from "../ui/GameFeatureCard";
 import { GlassInput } from "./atoms/GlassInput/GlassInput";
 
 function GameFeature() {
-  const doSomething = () => {
-    console.log("first");
-  };
-
   //game feature data
   const features = [
     {
