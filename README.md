@@ -1,60 +1,54 @@
- The Mind Block FrontEnd
+# React + TypeScript + Vite
 
-🧠 Mind Block - Blockchain Puzzle Adventure  
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-Mind Block is a **Web3-powered puzzle game** where players solve logic and coding challenges to earn **tokens**. With **AI-generated challenges (Coming Soon)**, difficulty scaling, and **on-chain rewards**, it's the ultimate test of intelligence in the blockchain world.  
+Currently, two official plugins are available:
 
-🚀 **Sharpen your mind. Earn rewards. Own the blockchain puzzle world.**  
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
----
+## Expanding the ESLint configuration
 
-**✨ Features**  
-- **AI-Generated Challenges** – Dynamically created coding & logic puzzles  
-- **IQ-Based Difficulty Scaling** – Personalized puzzles based on a quick survey  
-- **Blockchain-Powered Rewards** – Earn **StarkNet tokens** for solving puzzles  
-- **Real-Time Leaderboard** – Compete with others & track progress  
-- **AI-Assisted Solution Explanations** – Get step-by-step breakdowns of puzzles  
-- **Secure Authentication** – Sign in via **wallet, Google, or email**  
+If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
 
----
-
- **🛠 Tech Stack**    
-- **React.js** – Frontend framework  
-- **TailwindCSS** – Modern UI styling  
-- **Context** – Lightweight state management  
-- **Firebase/Auth.js** – Secure authentication  
-- **Wagmi + StarkNet.js** – Wallet-based login  
-
----
-
- **🛠 Setup & Installation**  
-
-```bash
-# Clone the repository
-git clone https://github.com/YOUR_GITHUB_ORG/mind-block-frontend.git
-cd mind-block-frontend
-
-# Install dependencies
-npm install
-
-# Start the development server
-npm run start
+```js
+export default tseslint.config({
+  extends: [
+    // Remove ...tseslint.configs.recommended and replace with this
+    ...tseslint.configs.recommendedTypeChecked,
+    // Alternatively, use this for stricter rules
+    ...tseslint.configs.strictTypeChecked,
+    // Optionally, add this for stylistic rules
+    ...tseslint.configs.stylisticTypeChecked,
+  ],
+  languageOptions: {
+    // other options...
+    parserOptions: {
+      project: ["./tsconfig.node.json", "./tsconfig.app.json"],
+      tsconfigRootDir: import.meta.dirname,
+    },
+  },
+});
 ```
-- Configure `.env` with API keys  
-- Connect to the **backend & smart contracts**  
 
----
+You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
 
- **📜 License**  
-This project is open-source under the **MIT License**.  
+```js
+// eslint.config.js
+import reactX from "eslint-plugin-react-x";
+import reactDom from "eslint-plugin-react-dom";
 
----
-
- **📢 Join the Community**  
-🚀 Follow the project & discuss new features!  
-
-- GitHub: **github.com/MindBlockLabs**  
-- Twitter: **Coming Soon**  
-- https://t.me/+kjacdy68yfwwNTVk  
-
----
+export default tseslint.config({
+  plugins: {
+    // Add the react-x and react-dom plugins
+    "react-x": reactX,
+    "react-dom": reactDom,
+  },
+  rules: {
+    // other rules...
+    // Enable its recommended typescript rules
+    ...reactX.configs["recommended-typescript"].rules,
+    ...reactDom.configs.recommended.rules,
+  },
+});
+```
