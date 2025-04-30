@@ -1,5 +1,5 @@
 import { Brain, Trophy, Code } from "lucide-react";
-import { GameFeatureCard } from "../ui/GameFeatureCard";
+// import { GameFeatureCard } from "../ui/GameFeatureCard";
 
 function GameFeature() {
   //game feature data
@@ -32,7 +32,7 @@ function GameFeature() {
       >
         Game Features
       </h2>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {features.map((feature, index) => (
           <GameFeatureCard
             key={index}
@@ -41,7 +41,7 @@ function GameFeature() {
             description={feature.description}
           />
         ))}
-      </div>
+      </div> */}
     </div>
   );
 }
