@@ -2,14 +2,13 @@ import { useCallback } from "react";
 import Particles from "react-tsparticles";
 import { loadSlim } from "tsparticles-slim";
 import type { Engine } from "tsparticles-engine";
-import "./App.css";
 import HeroSection from "./components/HeroSection";
 import LottieAnimationSection from "./components/LottieAnimationSection";
 import GameFeature from "./components/GameFeatures";
 import Footer from "./components/Footer";
 import { options } from "./config/particlesConfig";
 
-function App() {
+function Home() {
   const particlesInit = useCallback(async (engine: Engine) => {
     // console.log(engine);
     await loadSlim(engine);
@@ -43,4 +42,4 @@ function App() {
   );
 }
 
-export default App;
+export default Home;
