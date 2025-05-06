@@ -1,10 +1,12 @@
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 
 const Button = () => {
+  const navigate = useNavigate();
+
   return (
     <StyledWrapper>
-      {/* Corrected SVG namespace and removed backticks */}
-      <button className="button">
+      <button className="button" onClick={() => navigate('/auth')}>
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
           <g strokeWidth={0} id="SVGRepo_bgCarrier" />
           <g
@@ -22,7 +24,7 @@ const Button = () => {
             />{" "}
           </g>
         </svg>
-        <span>Play</span>
+        Play Now
       </button>
     </StyledWrapper>
   );
@@ -99,4 +101,4 @@ const StyledWrapper = styled.div`
   }
 `;
 
-export default Button; // Renamed export
+export default Button;
