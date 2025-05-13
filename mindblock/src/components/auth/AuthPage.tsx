@@ -7,6 +7,8 @@ import { StarkNetAuth } from './StarkNetAuth';
 import { useAuthStore } from '../../store/useAuthStore';
 import { AuthState } from '../../types/auth';
 
+// the Authpage component is the main entry point for authentication
+
 export const AuthPage = () => {
   const navigate = useNavigate();
   const isAuthenticated = useAuthStore((state: AuthState) => state.isAuthenticated);

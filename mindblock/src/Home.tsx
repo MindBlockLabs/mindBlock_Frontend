@@ -5,7 +5,6 @@ import { StarknetConfig, InjectedConnector } from '@starknet-react/core';
 import Particles from "react-tsparticles";
 import { loadSlim } from "tsparticles-slim";
 import type { Engine } from "tsparticles-engine";
-import "./App.css";
 import HeroSection from "./components/HeroSection";
 import LottieAnimationSection from "./components/LottieAnimationSection";
 import GameFeature from "./components/GameFeatures";
@@ -25,9 +24,12 @@ const connectors = [
   new InjectedConnector({ options: { id: 'argentX' }}),
 ];
 
+
 function App() {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   
+
+function Home() {
   const particlesInit = useCallback(async (engine: Engine) => {
     await loadSlim(engine);
   }, []);
@@ -78,4 +80,4 @@ function App() {
   );
 }
 
-export default App;
+export default Home;
