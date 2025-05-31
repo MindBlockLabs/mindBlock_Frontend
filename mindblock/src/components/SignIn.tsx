@@ -1,57 +1,40 @@
 import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useAuthStore } from "../store/authStore";
+import { Brain } from "lucide-react";
 import Button from "./atoms/Button";
 import Input from "./atoms/Input";
-import { Brain } from "lucide-react";
-
-// Define the validation schema with Zod
-const logInSchema = z.object({
-  email: z.string().email({ message: "Please enter a valid email address" }),
-  password: z
-    .string()
-    .min(8, { message: "Password must be at least 8 characters" })
-    .regex(/[A-Z]/, {
-      message: "Password must contain at least one capital letter",
-    })
-    .regex(/[!@#$%^&*(),.?":{}|<>]/, {
-      message: "Password must contain at least one symbol",
-    }),
-});
-
-// Infer the type from the schema
-type LoginData = z.infer<typeof logInSchema>;
 
 const SignIn = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState("email");
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<LoginData>({
-    resolver: zodResolver(logInSchema),
-    mode: "onBlur",
+  const navigate = useNavigate();
+  const location = useLocation();
+  const login = useAuthStore((state) => state.login);
+  
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
   });
+  const [error, setError] = useState('');
 
-  const onSubmit = async (data: LoginData) => {
-    setIsLoading(true);
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
 
     try {
-      // Here you would integrate with your backend API
-      console.log("Login successfull:", data);
-
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      // Handle successful signup
-      // e.g., redirect to login or dashboard
-    } catch (error) {
-      console.error("Login error:", error);
-    } finally {
-      setIsLoading(false);
+      await login(formData.email, formData.password);
+      // Redirect to the page they tried to visit or home
+      const from = location.state?.from?.pathname || '/';
+      navigate(from, { replace: true });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
     }
   };
 
@@ -75,31 +58,12 @@ const SignIn = () => {
         </p>
 
         {/* Form */}
-        <form onSubmit={handleSubmit(onSubmit)} className='space-y-5 border-1 border-[#212122] p-6 rounded-lg'>
-
-          {/* Tabs */}
-          <div className="grid grid-cols-2 mb-6 p-1 bg-gray-800/80 rounded-md overflow-hidden">
-            <button
-              className={`py-2 px-4 cursor-pointer text-center items-center justify-center rounded-lg flex font-secondary ${
-                activeTab === "email"
-                  ? "bg-[#0d0d0d] text-white"
-                  : "bg-gray-800/80 text-gray-400"
-              }`}
-              onClick={() => setActiveTab("email")}
-            >
-              Email
-            </button>
-            <button
-              className={`py-2 cursor-pointer px-4 text-center items-center justify-center rounded-lg flex font-secondary ${
-                activeTab === "wallet"
-                  ? "bg-[#0d0d0d] text-white"
-                  : "bg-gray-800/80 text-gray-400"
-              }`}
-              onClick={() => setActiveTab("wallet")}
-            >
-              Wallet
-            </button>
-          </div>
+        <form onSubmit={handleSubmit} className='space-y-5 border-1 border-[#212122] p-6 rounded-lg'>
+          {error && (
+            <div className="bg-red-500 text-white p-3 rounded-md text-sm">
+              {error}
+            </div>
+          )}
 
           {/* EMAIL FIELD  */}
           <div className='space-y-1'>
@@ -112,15 +76,11 @@ const SignIn = () => {
               placeholder='your.email@example.com'
               icon='mail'
               className={
-                errors.email ? "border-red-500 focus:border-red-500" : ""
+                error ? "border-red-500 focus:border-red-500" : ""
               }
-              {...register("email")}
+              value={formData.email}
+              onChange={handleChange}
             />
-            {errors.email && (
-              <p className='text-red-500 text-xs mt-1'>
-                {errors.email.message}
-              </p>
-            )}
           </div>
 
           {/* PASSWORD FIELD  */}
@@ -140,22 +100,17 @@ const SignIn = () => {
               placeholder='••••••••'
               icon='lock'
               className={
-                errors.password ? "border-red-500 focus:border-red-500" : ""
+                error ? "border-red-500 focus:border-red-500" : ""
               }
-              {...register("password")}
+              value={formData.password}
+              onChange={handleChange}
             />
-            {errors.password && (
-              <p className='text-red-500 text-xs mt-1'>
-                {errors.password.message}
-              </p>
-            )}
           </div>
 
           <Button
             type='submit'
             variant='primary'
             fullWidth
-            isLoading={isLoading}
             className='mt-2 cursor-pointer'
           >
             Login
