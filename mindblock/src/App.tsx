@@ -11,6 +11,7 @@ const App = () => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated());
 
   return (
+    //BrowserRouter is used to wrap the entire application and provide routing functionality
     <BrowserRouter>
       <div className="min-h-screen bg-gray-900">
         <Navigation />
