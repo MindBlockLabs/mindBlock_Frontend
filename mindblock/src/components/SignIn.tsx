@@ -5,6 +5,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Button from "./atoms/Button";
 import Input from "./atoms/Input";
 import { Brain } from "lucide-react";
+import { useNavigate } from 'react-router-dom';
+import { loginUser, mockGoogleAuth } from './authUtils';
 
 // Define the validation schema with Zod
 const logInSchema = z.object({
@@ -25,7 +27,9 @@ type LoginData = z.infer<typeof logInSchema>;
 
 const SignIn = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState("email");
+  const navigate = useNavigate();
 
   const {
     register,
@@ -38,18 +42,35 @@ const SignIn = () => {
 
   const onSubmit = async (data: LoginData) => {
     setIsLoading(true);
-
+    setError(null);
     try {
-      // Here you would integrate with your backend API
-      console.log("Login successfull:", data);
-
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      // Handle successful signup
-      // e.g., redirect to login or dashboard
+      const result = loginUser(data.email, data.password);
+      if (!result.success) {
+        setError(result.error || 'Login failed');
+        return;
+      }
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      navigate('/');
     } catch (error) {
-      console.error("Login error:", error);
+      setError('Login error');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const result = mockGoogleAuth();
+      if (!result.success) {
+        setError(result.error || 'Google login failed');
+        return;
+      }
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      navigate('/');
+    } catch (error) {
+      setError('Google login error');
     } finally {
       setIsLoading(false);
     }
@@ -76,6 +97,9 @@ const SignIn = () => {
 
         {/* Form */}
         <form onSubmit={handleSubmit(onSubmit)} className='space-y-5 border-1 border-[#212122] p-6 rounded-lg'>
+          {error && (
+            <p className='text-red-500 text-xs text-center'>{error}</p>
+          )}
 
           {/* Tabs */}
           <div className="grid grid-cols-2 mb-6 p-1 bg-gray-800/80 rounded-md overflow-hidden">
@@ -160,6 +184,33 @@ const SignIn = () => {
           >
             Login
           </Button>
+          <div className="mt-6 text-center">
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-700"></div>
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-2 bg-black/75 text-gray-400">
+                  Or continue with
+                </span>
+              </div>
+            </div>
+            <div className="mt-4 grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                className="flex items-center justify-center py-2 px-4 border border-gray-700 rounded-md hover:border-cyan-400/30 hover:shadow-sm hover:shadow-cyan-400/20 bg-gray-800/50 text-white transition duration-200"
+                onClick={handleGoogleLogin}
+              >
+                Google
+              </button>
+              <button
+                type="button"
+                className="flex items-center justify-center py-2 px-4 border border-gray-700 rounded-md hover:border-cyan-400/30 hover:shadow-sm hover:shadow-cyan-400/20 bg-gray-800/50 text-white transition duration-200"
+              >
+                StarkNet
+              </button>
+            </div>
+          </div>
 
           <div className='text-center mt-6'>
             <p className='text-gray-400 text-sm'>

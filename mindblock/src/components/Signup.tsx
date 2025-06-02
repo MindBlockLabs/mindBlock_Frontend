@@ -2,6 +2,11 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigate } from "react-router-dom";
+import {
+  registerUser,
+  mockGoogleAuth
+} from './authUtils';
 
 // Import your existing components here
 
@@ -37,6 +42,8 @@ type SignupFormData = z.infer<typeof signupSchema>;
 
 const SignupForm = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const {
     register,
@@ -49,18 +56,40 @@ const SignupForm = () => {
 
   const onSubmit = async (data: SignupFormData) => {
     setIsLoading(true);
-
+    setError(null);
     try {
-      // Here you would integrate with your backend API
-      console.log("Form submitted successfully:", data);
-
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      // Handle successful signup
-      // e.g., redirect to login or dashboard
+      const result = registerUser({
+        username: data.username,
+        email: data.email,
+        password: data.password,
+        provider: 'local',
+      });
+      if (!result.success) {
+        setError(result.error || 'Registration failed');
+        return;
+      }
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      navigate('/');
     } catch (error) {
-      console.error("Signup error:", error);
+      setError('Signup error');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleGoogleSignup = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const result = mockGoogleAuth();
+      if (!result.success) {
+        setError(result.error || 'Google signup failed');
+        return;
+      }
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      navigate('/');
+    } catch (error) {
+      setError('Google signup error');
     } finally {
       setIsLoading(false);
     }
@@ -86,6 +115,9 @@ const SignupForm = () => {
 
         {/* Form */}
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+          {error && (
+            <p className="text-red-500 text-xs text-center">{error}</p>
+          )}
           <div className="space-y-1">
             <label htmlFor="username" className="sr-only">
               Username
@@ -199,6 +231,7 @@ const SignupForm = () => {
               <button
                 type="button"
                 className="flex items-center justify-center py-2 px-4 border border-gray-700 rounded-md hover:border-cyan-400/30 hover:shadow-sm hover:shadow-cyan-400/20 bg-gray-800/50 text-white transition duration-200"
+                onClick={handleGoogleSignup}
               >
                 Google
               </button>
