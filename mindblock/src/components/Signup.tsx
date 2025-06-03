@@ -3,33 +3,16 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
-import {
-  registerUser,
-  mockGoogleAuth
-} from './authUtils';
-
-// Import your existing components here
+import { registerUser, mockGoogleAuth } from "./authUtils";
 
 import Button from "./atoms/Button";
 import Input from "./atoms/Input";
-import { Brain } from "lucide-react";
 
-// Define the validation schema with Zod
 const signupSchema = z
   .object({
-    username: z
-      .string()
-      .min(3, { message: "Username must be at least 3 characters" }),
-    email: z.string().email({ message: "Please enter a valid email address" }),
-    password: z
-      .string()
-      .min(8, { message: "Password must be at least 8 characters" })
-      .regex(/[A-Z]/, {
-        message: "Password must contain at least one capital letter",
-      })
-      .regex(/[!@#$%^&*(),.?":{}|<>]/, {
-        message: "Password must contain at least one symbol",
-      }),
+    username: z.string().min(3, "Username must be at least 3 characters"),
+    email: z.string().email("Invalid email"),
+    password: z.string().min(8, "Password must be at least 8 characters"),
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -37,7 +20,6 @@ const signupSchema = z
     path: ["confirmPassword"],
   });
 
-// Infer the type from the schema
 type SignupFormData = z.infer<typeof signupSchema>;
 
 const SignupForm = () => {
@@ -62,16 +44,16 @@ const SignupForm = () => {
         username: data.username,
         email: data.email,
         password: data.password,
-        provider: 'local',
+        provider: "local",
       });
       if (!result.success) {
-        setError(result.error || 'Registration failed');
+        setError(result.error || "Registration failed");
         return;
       }
       await new Promise((resolve) => setTimeout(resolve, 500));
-      navigate('/');
+      navigate("/");
     } catch (error) {
-      setError('Signup error');
+      setError("Signup error");
     } finally {
       setIsLoading(false);
     }
@@ -83,54 +65,43 @@ const SignupForm = () => {
     try {
       const result = mockGoogleAuth();
       if (!result.success) {
-        setError(result.error || 'Google signup failed');
+        setError(result.error || "Google signup failed");
         return;
       }
       await new Promise((resolve) => setTimeout(resolve, 500));
-      navigate('/');
+      navigate("/");
     } catch (error) {
-      setError('Google signup error');
+      setError("Google signup error");
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-[#0a0a0a] px-4 py-8 bg-gradient-to-r from-[rgba(0,180,255,0.05)] to-transparent">
-      <div className="w-full max-w-md p-6 rounded-lg backdrop-blur-md bg-black/75 border border-cyan-400/20 shadow-lg shadow-cyan-400/10">
-        {/* Logo */}
-        <div className="flex justify-center mb-6">
-          <div className="flex items-center justify-center w-12 h-12 rounded-full border-2 border-cyan-400 text-cyan-400 shadow-md shadow-cyan-400/50 text-xl font-bold">
-            <Brain />
-          </div>
-        </div>
-
-        {/* Title */}
-        <h1 className="text-2xl font-primary font-semibold text-white text-center mb-1">
+    <div className="min-h-screen flex items-center justify-center bg-gray-900">
+      <div className="max-w-md w-full space-y-8 p-8 bg-gray-800 rounded-lg shadow-lg">
+        <h1 className="text-2xl font-semibold text-white text-center mb-1">
           Create Account
         </h1>
         <p className="text-gray-400 text-center text-sm mb-6">
           Join the Mind Block community and start solving puzzles
         </p>
 
-        {/* Form */}
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
           {error && (
             <p className="text-red-500 text-xs text-center">{error}</p>
           )}
-          <div className="space-y-1">
-            <label htmlFor="username" className="sr-only">
-              Username
-            </label>
+
+          <div>
             <Input
               id="username"
               type="text"
               placeholder="Choose a username"
               icon="user"
+              {...register("username")}
               className={
                 errors.username ? "border-red-500 focus:border-red-500" : ""
               }
-              {...register("username")}
             />
             {errors.username && (
               <p className="text-red-500 text-xs mt-1">
@@ -139,19 +110,16 @@ const SignupForm = () => {
             )}
           </div>
 
-          <div className="space-y-1">
-            <label htmlFor="email" className="sr-only">
-              Email
-            </label>
+          <div>
             <Input
               id="email"
               type="email"
               placeholder="your.email@example.com"
               icon="mail"
+              {...register("email")}
               className={
                 errors.email ? "border-red-500 focus:border-red-500" : ""
               }
-              {...register("email")}
             />
             {errors.email && (
               <p className="text-red-500 text-xs mt-1">
@@ -160,19 +128,16 @@ const SignupForm = () => {
             )}
           </div>
 
-          <div className="space-y-1">
-            <label htmlFor="password" className="sr-only">
-              Password
-            </label>
+          <div>
             <Input
               id="password"
               type="password"
               placeholder="••••••••"
               icon="lock"
+              {...register("password")}
               className={
                 errors.password ? "border-red-500 focus:border-red-500" : ""
               }
-              {...register("password")}
             />
             {errors.password && (
               <p className="text-red-500 text-xs mt-1">
@@ -181,21 +146,18 @@ const SignupForm = () => {
             )}
           </div>
 
-          <div className="space-y-1">
-            <label htmlFor="confirmPassword" className="sr-only">
-              Confirm Password
-            </label>
+          <div>
             <Input
               id="confirmPassword"
               type="password"
               placeholder="••••••••"
               icon="lock"
+              {...register("confirmPassword")}
               className={
                 errors.confirmPassword
                   ? "border-red-500 focus:border-red-500"
                   : ""
               }
-              {...register("confirmPassword")}
             />
             {errors.confirmPassword && (
               <p className="text-red-500 text-xs mt-1">
@@ -214,7 +176,6 @@ const SignupForm = () => {
             Create Account
           </Button>
 
-          {/* Alternative Signup Options */}
           <div className="mt-6 text-center">
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
@@ -230,8 +191,8 @@ const SignupForm = () => {
             <div className="mt-4 grid grid-cols-2 gap-3">
               <button
                 type="button"
-                className="flex items-center justify-center py-2 px-4 border border-gray-700 rounded-md hover:border-cyan-400/30 hover:shadow-sm hover:shadow-cyan-400/20 bg-gray-800/50 text-white transition duration-200"
                 onClick={handleGoogleSignup}
+                className="flex items-center justify-center py-2 px-4 border border-gray-700 rounded-md hover:border-cyan-400/30 hover:shadow-sm hover:shadow-cyan-400/20 bg-gray-800/50 text-white transition duration-200"
               >
                 Google
               </button>
@@ -242,18 +203,6 @@ const SignupForm = () => {
                 StarkNet
               </button>
             </div>
-          </div>
-
-          <div className="text-center mt-6">
-            <p className="text-gray-400 text-sm">
-              Already have an account?{" "}
-              <a
-                href="/login"
-                className="text-cyan-400 font-medium hover:underline"
-              >
-                Login
-              </a>
-            </p>
           </div>
         </form>
       </div>
