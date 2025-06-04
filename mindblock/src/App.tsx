@@ -1,21 +1,34 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+  useLocation,
+} from "react-router-dom";
 import "./App.css";
 import Home from "./Home";
+import Learn from "./components/Learn";
 import SignupForm from "./components/Signup";
 import SignIn from "./components/SignIn";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Navigation from "./components/Navigation";
 import { useAuthStore } from "./store/authStore";
 
-const App = () => {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated());
+const AppContent = () => {
+  const location = useLocation();
+  const currentUser = useAuthStore((state) => state.currentUser);
+  const isAuthenticated = !!currentUser?.isAuthenticated;
+
+  // Hide navigation on home page
+  const showNavigation = location.pathname !== "/";
 
   return (
-    <BrowserRouter>
-      <div className="min-h-screen bg-gray-900">
-        <Navigation />
+    <div className="min-h-screen bg-black">
+      {showNavigation && <Navigation />}
+      <div className={showNavigation ? "pt-16" : ""}>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/learn" element={<Learn />} />
           <Route
             path="/signup"
             element={
@@ -24,9 +37,7 @@ const App = () => {
           />
           <Route
             path="/login"
-            element={
-              isAuthenticated ? <Navigate to="/" replace /> : <SignIn />
-            }
+            element={isAuthenticated ? <Navigate to="/" replace /> : <SignIn />}
           />
           <Route
             path="/dashboard"
@@ -43,6 +54,14 @@ const App = () => {
           />
         </Routes>
       </div>
+    </div>
+  );
+};
+
+const App = () => {
+  return (
+    <BrowserRouter>
+      <AppContent />
     </BrowserRouter>
   );
 };
