@@ -1,11 +1,10 @@
-import { Link } from 'react-router-dom';
-import { useAuthStore } from '../store/authStore';
+import React from "react";
+import { Link } from "react-router-dom";
+import { useAuthStore } from "../store/authStore";
 
 const Navigation = () => {
-  const { currentUser, logout } = useAuthStore((state) => ({
-    currentUser: state.currentUser,
-    logout: state.logout,
-  }));
+  const currentUser = useAuthStore((state) => state.currentUser);
+  const logout = useAuthStore((state) => state.logout);
 
   return (
     <nav className="bg-gray-800 shadow-lg">
@@ -59,4 +58,4 @@ const Navigation = () => {
   );
 };
 
-export default Navigation; 
+export default Navigation;

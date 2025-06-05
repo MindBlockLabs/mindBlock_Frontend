@@ -7,17 +7,24 @@ const hashPassword = (password: string): string => {
   return btoa(password); // Base64 encoding for demo
 };
 
+// Extended User type for internal storage with password
+type UserWithPassword = User & { password: string };
+
 export const useAuthStore = create<AuthState>()(
   persist(
     (set, get) => ({
-      users: [],
+      users: [] as UserWithPassword[],
       currentUser: null,
 
-      register: async (userData) => {
+      register: async (
+        userData: Omit<User, "id" | "createdAt"> & { password: string }
+      ) => {
         const { username, email, password } = userData;
 
         // Check if user already exists
-        const existingUser = get().users.find((user) => user.email === email);
+        const existingUser = (get().users as UserWithPassword[]).find(
+          (user: UserWithPassword) => user.email === email
+        );
         if (existingUser) {
           throw new Error("User already exists");
         }
@@ -33,13 +40,18 @@ export const useAuthStore = create<AuthState>()(
         // For demo, we'll store the hashed password with the user
         const hashedPassword = hashPassword(password);
 
-        set((state) => ({
-          users: [...state.users, { ...newUser, password: hashedPassword }],
+        set((state: AuthState) => ({
+          users: [
+            ...(state.users as UserWithPassword[]),
+            { ...newUser, password: hashedPassword },
+          ],
         }));
       },
 
       login: async (email: string, password: string) => {
-        const user = get().users.find((u) => u.email === email);
+        const user = (get().users as UserWithPassword[]).find(
+          (u: UserWithPassword) => u.email === email
+        );
 
         if (!user) {
           throw new Error("User not found");
@@ -55,6 +67,7 @@ export const useAuthStore = create<AuthState>()(
           id: user.id,
           username: user.username,
           email: user.email,
+          createdAt: user.createdAt,
           isAuthenticated: true,
         };
 
@@ -64,14 +77,11 @@ export const useAuthStore = create<AuthState>()(
       logout: () => {
         set({ currentUser: null });
       },
-
-      isAuthenticated: () => {
-        return !!get().currentUser?.isAuthenticated;
-      },
+      // REMOVED: isAuthenticated function that was causing infinite loops
     }),
     {
       name: "auth-storage",
-      partialize: (state) => ({
+      partialize: (state: AuthState) => ({
         users: state.users,
         currentUser: state.currentUser,
       }),

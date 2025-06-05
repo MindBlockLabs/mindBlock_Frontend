@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import React, { useCallback } from "react";
 import Particles from "react-tsparticles";
 import { loadSlim } from "tsparticles-slim";
 import type { Engine } from "tsparticles-engine";
@@ -7,10 +7,13 @@ import LottieAnimationSection from "./components/LottieAnimationSection";
 import GameFeature from "./components/GameFeatures";
 import Footer from "./components/Footer";
 import { options } from "./config/particlesConfig";
-import { useAuth } from './components/AuthContext';
+import { useAuthStore } from "./store/authStore";
 
 function Home() {
-  const { user, logout } = useAuth();
+  const { currentUser, logout } = useAuthStore((state) => ({
+    currentUser: state.currentUser,
+    logout: state.logout,
+  }));
 
   const particlesInit = useCallback(async (engine: Engine) => {
     // console.log(engine);
@@ -23,9 +26,11 @@ function Home() {
 
   return (
     <div className="relative min-h-screen bg-black text-white overflow-hidden">
-      {user && (
+      {currentUser && (
         <div className="absolute top-4 right-4 z-30 flex items-center gap-2">
-          <span className="text-cyan-400 text-sm">Welcome, {user.username || user.email}!</span>
+          <span className="text-cyan-400 text-sm">
+            Welcome, {currentUser.username || currentUser.email}!
+          </span>
           <button
             className="px-3 py-1 bg-cyan-700 rounded text-white text-xs hover:bg-cyan-500 transition"
             onClick={logout}
