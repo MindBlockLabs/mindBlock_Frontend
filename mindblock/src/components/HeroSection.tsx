@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 // Removed Lottie-related imports: lottieJson, LottieAnimation
 import LearnMoreButton from "./LearnMoreButton";
 import PlayNowButton from "./PlayNowButton";
+import { Link } from "react-router-dom";
 
 const HeroSectionContainer = styled(motion.section)`
   // Apply motion directly here
@@ -105,7 +106,9 @@ const HeroSection = () => {
 
         <ButtonContainer>
           <PlayNowButton />
-          <LearnMoreButton />
+          <Link to="/learnmore">
+            <LearnMoreButton />
+          </Link>
         </ButtonContainer>
       </TextContent>
 

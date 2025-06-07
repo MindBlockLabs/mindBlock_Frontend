@@ -3,6 +3,7 @@ import "./App.css";
 import Home from "./Home";
 import SignupForm from "./components/Signup";
 import SignIn from "./components/SignIn";
+import LearnMore from "./components/LearnMore";
 
 const App = () => {
   return (
@@ -11,6 +12,7 @@ const App = () => {
         <Route path="/" element={<Home />} />
         <Route path="/signup" element={<SignupForm />} />
         <Route path="/login" element={<SignIn />} />
+        <Route path="/learnmore" element={<LearnMore />} />
       </Routes>
     </BrowserRouter>
   );
