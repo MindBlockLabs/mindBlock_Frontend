@@ -1,7 +1,14 @@
 import { Moon, Menu, X } from "lucide-react";
 import { useState } from "react";
+import { useAuthStore } from "../store/authStore";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
+  const currentUser = useAuthStore((state) => state.currentUser);
+  console.log(currentUser);
+
+  const navigate = useNavigate();
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const toggleMenu = () => {
@@ -10,17 +17,17 @@ const Navbar = () => {
 
   return (
     <div>
-      <div className="flex justify-between items-center px-4 sm:px-6 md:px-10 py-4">
-        <div>
-          <h1 className="bg-gradient-to-r from-white to-neutral-800 inline-block text-transparent bg-clip-text text-[20px] sm:text-[22px] md:text-[24px] font-semibold">
+      <div className="fixed left-0 right-0 z-30 flex justify-between items-center px-4 sm:px-6 md:px-10 py-4 bg-transparent backdrop-blur-md border-b border-slate-800">
+        <div onClick={() => navigate("/")} className="cursor-pointer">
+          <h1 className="bg-gradient-to-r from-white to-neutral-800 inline-block text-transparent bg-clip-text text-[20px] sm:text-[22px] md:text-[24px] font-semibold cursor-pointer">
             MIND BLOCK
           </h1>
         </div>
 
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center gap-6">
-          <div>
-            <h2 className="text-neutral-400 cursor-pointer hover:text-white transition-colors">
+          <div className="">
+            <h2 className="text-neutral-400 cursor-not-allowed hover:text-white transition-colors">
               Puzzle
             </h2>
           </div>
@@ -35,10 +42,27 @@ const Navbar = () => {
             </h2>
           </div>
           <div>
-            <Moon className="size-9 border-2 border-slate-800 p-2 rounded-sm cursor-pointer hover:border-slate-600 transition-colors" />
-          </div>
-          <div>
-            <button className="bg-white p-1 rounded-full">Pro</button>
+            {currentUser ? (
+              <Moon
+                className="size-9 border-2 border-slate-800 p-2 rounded-sm cursor-pointer hover:border-slate-600 transition-colors"
+                // onClick={handleAvatarClick} // for modal/avatar later
+              />
+            ) : (
+              <>
+                <button
+                  className="px-3 py-1 bg-cyan-700 rounded text-white text-xs hover:bg-cyan-500 transition mr-2"
+                  onClick={() => navigate("/login")}
+                >
+                  Login
+                </button>
+                <button
+                  className="px-3 py-1 bg-white text-black rounded text-xs hover:bg-gray-200 transition"
+                  onClick={() => navigate("/signup")}
+                >
+                  Signup
+                </button>
+              </>
+            )}
           </div>
         </div>
 

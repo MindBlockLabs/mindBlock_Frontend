@@ -2,7 +2,7 @@ import { useState } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
 const Faq = () => {
   const [openIndex, setOpenIndex] = useState(null);
-  const toggleAnswer = (index) => {
+  const toggleAnswer = (index: any) => {
     setOpenIndex(openIndex === index ? null : index);
   };
   const faq = [

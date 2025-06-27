@@ -50,16 +50,19 @@ export const useAuthStore = create<AuthState>()(
 
       login: async (email: string, password: string) => {
         const user = (get().users as UserWithPassword[]).find(
-          (u: UserWithPassword) => u.email === email
+          (u: UserWithPassword) =>
+            u.email.trim().toLowerCase() === email.trim().toLowerCase()
         );
 
         if (!user) {
+          console.error("User not found");
           throw new Error("User not found");
         }
 
         // In a real app, we would verify the password hash
         const hashedPassword = hashPassword(password);
         if (hashedPassword !== user.password) {
+          console.error("Invalid password");
           throw new Error("Invalid password");
         }
 
@@ -72,6 +75,7 @@ export const useAuthStore = create<AuthState>()(
         };
 
         set({ currentUser: authUser });
+        console.log("User logged in successfully, currentUser set:", authUser);
       },
 
       logout: () => {

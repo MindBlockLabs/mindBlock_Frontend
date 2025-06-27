@@ -4,12 +4,9 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Brain } from "lucide-react";
-
 import { useAuthStore } from "../store/authStore";
-import Button from "./atoms/Button";
-import Input from "./atoms/Input";
-import { Brain } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import Button from "../components/atoms/Button";
+import Input from "../components/atoms/Input";
 
 // Validation schema using Zod
 const logInSchema = z.object({
@@ -33,10 +30,8 @@ const SignIn = () => {
   const login = useAuthStore((state) => state.login);
 
   const [isLoading, setIsLoading] = useState(false);
-  // const [activeTab, setActiveTab] = useState("email");
-  const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState("email");
+  // const [activeTab, setActiveTab] = useState("email");
 
   const {
     register,
@@ -88,7 +83,6 @@ const SignIn = () => {
 
         {/* Title */}
         <h1 className="text-2xl font-primary font-semibold text-white text-center mb-1">
-        <h1 className='text-2xl font-primary font-semibold text-white text-center mb-1'>
           Welcome Back
         </h1>
         <p className="text-gray-400 text-center text-sm mb-6">
@@ -136,7 +130,6 @@ const SignIn = () => {
                 errors.email ? "border-red-500 focus:border-red-500" : ""
               }
               {...register("email")}
-              className={errors.email ? "border-red-500 focus:border-red-500" : ""}
             />
             {errors.email && (
               <p className="text-red-500 text-xs mt-1">
@@ -163,19 +156,16 @@ const SignIn = () => {
               className={
                 errors.password ? "border-red-500 focus:border-red-500" : ""
               }
-              id='password'
-              type='password'
-              placeholder='••••••••'
-              icon='lock'
               {...register("password")}
-              className={errors.password ? "border-red-500 focus:border-red-500" : ""}
             />
             {errors.password && (
               <p className="text-red-500 text-xs mt-1">
                 {errors.password.message}
               </p>
             )}
-            {errors.password && <p className='text-xs text-red-500'>{errors.password.message}</p>}
+            {errors.password && (
+              <p className="text-xs text-red-500">{errors.password.message}</p>
+            )}
           </div>
 
           <Button
@@ -184,6 +174,7 @@ const SignIn = () => {
             fullWidth
             isLoading={isLoading}
             className="mt-2 cursor-pointer"
+            // onClick={}
           >
             {isLoading ? "Logging in..." : "Login"}
           </Button>
@@ -194,7 +185,9 @@ const SignIn = () => {
                 <div className="w-full border-t border-gray-700"></div>
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-black/75 text-gray-400">Or continue with</span>
+                <span className="px-2 bg-black/75 text-gray-400">
+                  Or continue with
+                </span>
               </div>
             </div>
             <div className="mt-4 grid grid-cols-2 gap-3">
@@ -214,8 +207,8 @@ const SignIn = () => {
             </div>
           </div>
 
-          <div className='text-center mt-6'>
-            <p className='text-gray-400 text-sm'>
+          <div className="text-center mt-6">
+            <p className="text-gray-400 text-sm">
               Don't have an account?{" "}
               <a
                 href="/signup"

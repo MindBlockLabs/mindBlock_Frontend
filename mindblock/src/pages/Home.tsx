@@ -1,20 +1,22 @@
-import React, { useCallback } from "react";
+import { useCallback } from "react";
 import Particles from "react-tsparticles";
 import { loadSlim } from "tsparticles-slim";
 import type { Engine } from "tsparticles-engine";
-import HeroSection from "./components/HeroSection";
-import LottieAnimationSection from "./components/LottieAnimationSection";
-// import GameFeature from "./components/GameFeatures";
-import GameFeature from "./ui/GameFeatureCard";
-import Footer from "./components/Footer";
-import { options } from "./config/particlesConfig";
-import { useAuthStore } from "./store/authStore";
+import HeroSection from "../components/HeroSection";
+import LottieAnimationSection from "../components/LottieAnimationSection";
+import GameFeature from "../ui/GameFeatureCard";
+import Footer from "../components/Footer";
+import { options } from "../config/particlesConfig";
+import { useAuthStore } from "../store/authStore";
 
-function Home() {
-  const { currentUser, logout } = useAuthStore((state) => ({
-    currentUser: state.currentUser,
-    logout: state.logout,
-  }));
+const Home = () => {
+  // const { currentUser, logout } = useAuthStore((state) => ({
+  //   currentUser: state.currentUser,
+  //   logout: state.logout,
+  // }));
+
+  const currentUser = useAuthStore((state) => state.currentUser);
+  const logout = useAuthStore((state) => state.logout);
 
   const particlesInit = useCallback(async (engine: Engine) => {
     // console.log(engine);
@@ -28,7 +30,7 @@ function Home() {
   return (
     <div className="relative min-h-screen bg-black text-white overflow-hidden">
       {currentUser && (
-        <div className="absolute top-4 right-4 z-30 flex items-center gap-2">
+        <div className="absolute top-24 right-4 z-10 flex items-center gap-2">
           <span className="text-cyan-400 text-sm">
             Welcome, {currentUser.username || currentUser.email}!
           </span>
@@ -60,6 +62,6 @@ function Home() {
       </div>
     </div>
   );
-}
+};
 
 export default Home;

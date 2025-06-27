@@ -1,20 +1,34 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./App.css";
-import Home from "./Home";
-import SignupForm from "./components/Signup";
-import SignIn from "./components/SignIn";
-import LearnMore from "./components/LearnMore";
+import Home from "./pages/Home";
+import SignupForm from "./pages/Signup";
+import SignIn from "./pages/SignIn";
+import LearnMore from "./pages/LearnMore";
+import Layout from "./components/Layout";
 
 const App = () => {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/signup" element={<SignupForm />} />
-        <Route path="/login" element={<SignIn />} />
-        <Route path="/learnmore" element={<LearnMore />} />
-      </Routes>
-    </BrowserRouter>
+    <>
+      <BrowserRouter>
+        <Layout>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/signup" element={<SignupForm />} />
+            <Route path="/login" element={<SignIn />} />
+            <Route path="/learnmore" element={<LearnMore />} />
+          </Routes>
+        </Layout>
+      </BrowserRouter>
+      {/* <BrowserRouter>
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/signup" element={<SignupForm />} />
+          <Route path="/login" element={<SignIn />} />
+          <Route path="/learnmore" element={<LearnMore />} />
+        </Routes>
+      </BrowserRouter> */}
+    </>
   );
 };
 

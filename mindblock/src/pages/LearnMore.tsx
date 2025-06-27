@@ -1,10 +1,9 @@
-import Navbar from "./Navbar";
-import Faq from "./Faq";
-import LearnMoreFooter from "./LearnMoreFooter";
+import Faq from "../components/Faq";
+import LearnMoreFooter from "../components/LearnMoreFooter";
 import { useState } from "react";
-import TokenRewards from "./learnmore/TokenRewards";
-import BlockchainIntegration from "./learnmore/BlockchainIntegration";
-import GameMechanics from "./learnmore/GameMechanics";
+import TokenRewards from "../components/learnmore/TokenRewards";
+import BlockchainIntegration from "../components/learnmore/BlockchainIntegration";
+import GameMechanics from "../components/learnmore/GameMechanics";
 
 const LearnMore = () => {
   const [selected, setSelected] = useState("Token Rewards");
@@ -16,7 +15,6 @@ const LearnMore = () => {
 
   return (
     <div className="bg-slate-950 text-white">
-      <Navbar />
       <div className="flex justify-center items-center px-4">
         <div className="text-center pt-4 w-full max-w-[700px]">
           <h1 className="font-['Oswald',sans-serif] text-[32px] sm:text-[42px] md:text-[58px] font-bold leading-tight">
