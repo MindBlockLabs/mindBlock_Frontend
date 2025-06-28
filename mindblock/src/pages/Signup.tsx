@@ -3,10 +3,12 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
-import { registerUser, mockGoogleAuth } from "./authUtils";
+// import { registerUser, mockGoogleAuth } from "./authUtils";
+import { mockGoogleAuth } from "../components/authUtils";
 
-import Button from "./atoms/Button";
-import Input from "./atoms/Input";
+import Button from "../components/atoms/Button";
+import Input from "../components/atoms/Input";
+import { useAuthStore } from "../store/authStore";
 
 const signupSchema = z
   .object({
@@ -26,6 +28,7 @@ const SignupForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+  const registerUser = useAuthStore((state) => state.register);
 
   const {
     register,
@@ -40,16 +43,17 @@ const SignupForm = () => {
     setIsLoading(true);
     setError(null);
     try {
-      const result = registerUser({
+      const result = await registerUser({
         username: data.username,
         email: data.email,
         password: data.password,
-        provider: "local",
+        // provider: "local",
       });
-      if (!result.success) {
-        setError(result.error || "Registration failed");
-        return;
-      }
+      console.log(result);
+      // if (!result.success) {
+      //   setError(result.error || "Registration failed");
+      //   return;
+      // }
       await new Promise((resolve) => setTimeout(resolve, 500));
       navigate("/");
     } catch (error) {
@@ -88,9 +92,7 @@ const SignupForm = () => {
         </p>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-          {error && (
-            <p className="text-red-500 text-xs text-center">{error}</p>
-          )}
+          {error && <p className="text-red-500 text-xs text-center">{error}</p>}
 
           <div>
             <Input
