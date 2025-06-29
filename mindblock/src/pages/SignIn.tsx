@@ -1,3 +1,4 @@
+import { mockStarknetLogin } from "../components/authUtils";
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -56,6 +57,7 @@ const SignIn = () => {
     }
   };
 
+
   const handleGoogleLogin = async () => {
     setIsLoading(true);
     setError(null);
@@ -67,7 +69,24 @@ const SignIn = () => {
       setError("Google login error");
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleStarknetLogin = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const result = mockStarknetLogin();
+      if (!result.success) {
+        setError(result.error || "Starknet login failed");
+        return;
+      }
+      await new Promise((resolve) => setTimeout(resolve, 500));
       navigate("/");
+    } catch (error) {
+      setError("Starknet login error");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -200,6 +219,7 @@ const SignIn = () => {
               </button>
               <button
                 type="button"
+                onClick={handleStarknetLogin}
                 className="flex items-center justify-center py-2 px-4 border border-gray-700 rounded-md hover:border-cyan-400/30 hover:shadow-sm hover:shadow-cyan-400/20 bg-gray-800/50 text-white transition duration-200"
               >
                 StarkNet

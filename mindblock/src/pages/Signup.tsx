@@ -4,7 +4,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
 // import { registerUser, mockGoogleAuth } from "./authUtils";
-import { mockGoogleAuth } from "../components/authUtils";
+import { mockGoogleAuth, mockStarknetRegister } from "../components/authUtils";
 
 import Button from "../components/atoms/Button";
 import Input from "../components/atoms/Input";
@@ -76,6 +76,24 @@ const SignupForm = () => {
       navigate("/");
     } catch (error) {
       setError("Google signup error");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleStarknetSignup = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const result = mockStarknetRegister();
+      if (!result.success) {
+        setError(result.error || "Starknet signup failed");
+        return;
+      }
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      navigate("/");
+    } catch (error) {
+      setError("Starknet signup error");
     } finally {
       setIsLoading(false);
     }
@@ -200,6 +218,7 @@ const SignupForm = () => {
               </button>
               <button
                 type="button"
+                onClick={handleStarknetSignup}
                 className="flex items-center justify-center py-2 px-4 border border-gray-700 rounded-md hover:border-cyan-400/30 hover:shadow-sm hover:shadow-cyan-400/20 bg-gray-800/50 text-white transition duration-200"
               >
                 StarkNet

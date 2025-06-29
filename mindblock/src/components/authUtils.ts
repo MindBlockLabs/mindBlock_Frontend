@@ -4,9 +4,44 @@ export type User = {
   username?: string;
   email: string;
   password?: string;
-  provider?: "local" | "google";
+  provider?: "local" | "google" | "starknet";
   googleId?: string;
+  starknetAddress?: string;
 };
+// Mock Starknet wallet connection
+function mockConnectStarknetWallet(): string {
+  // Simulate a wallet address
+  return `0x${Math.floor(Math.random() * 1e16).toString(16)}`;
+}
+
+export function mockStarknetRegister(): { success: boolean; user?: User; error?: string } {
+  const starknetAddress = mockConnectStarknetWallet();
+  const user: User = {
+    username: `StarknetUser_${starknetAddress.slice(-4)}`,
+    email: `${starknetAddress}@starknet.io`,
+    provider: "starknet",
+    starknetAddress,
+  };
+  const users = getUsers();
+  if (users.some((u) => u.starknetAddress === starknetAddress && u.provider === "starknet")) {
+    return { success: false, error: "Starknet wallet already registered" };
+  }
+  users.push(user);
+  saveUsers(users);
+  setAuthUser(user);
+  return { success: true, user };
+}
+
+export function mockStarknetLogin(): { success: boolean; user?: User; error?: string } {
+  const starknetAddress = mockConnectStarknetWallet();
+  const users = getUsers();
+  const user = users.find((u) => u.starknetAddress === starknetAddress && u.provider === "starknet");
+  if (!user) {
+    return { success: false, error: "No account found for this Starknet wallet" };
+  }
+  setAuthUser(user);
+  return { success: true, user };
+}
 
 const USERS_KEY = "mindblock_users";
 const AUTH_KEY = "mindblock_auth";
