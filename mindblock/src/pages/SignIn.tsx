@@ -46,6 +46,18 @@ const SignIn = () => {
     setIsLoading(true);
     setError(null);
     try {
+      // Try local login first
+      const users = JSON.parse(localStorage.getItem("mindblock_users") || "[]");
+      const starknetUser = users.find((u: any) => u.provider === "starknet" && u.email === data.email);
+      if (starknetUser) {
+        // If user is a StarkNet user, log them in without password
+        localStorage.setItem("mindblock_auth", JSON.stringify(starknetUser));
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        navigate("/");
+        setIsLoading(false);
+        return;
+      }
+      // Otherwise, use local login (Zustand)
       await login(data.email, data.password);
       const from = location.state?.from?.pathname || "/";
       navigate(from, { replace: true });
@@ -67,7 +79,37 @@ const SignIn = () => {
       setError("Google login error");
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  // Mock StarkNet login handler
+  const handleStarknetLogin = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      // If user entered an email, try to match a StarkNet user by email
+      const emailInput = (document.getElementById("email") as HTMLInputElement)?.value;
+      const users = JSON.parse(localStorage.getItem("mindblock_users") || "[]");
+      let starknetUser = null;
+      if (emailInput) {
+        starknetUser = users.find((u: any) => u.provider === "starknet" && u.email === emailInput);
+      }
+      if (!starknetUser) {
+        // Otherwise, just pick the first StarkNet user
+        starknetUser = users.find((u: any) => u.provider === "starknet");
+      }
+      if (!starknetUser) {
+        setError("No StarkNet account found. Please register first.");
+        setIsLoading(false);
+        return;
+      }
+      localStorage.setItem("mindblock_auth", JSON.stringify(starknetUser));
+      await new Promise((resolve) => setTimeout(resolve, 500));
       navigate("/");
+    } catch (error) {
+      setError("StarkNet login error");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -201,6 +243,7 @@ const SignIn = () => {
               <button
                 type="button"
                 className="flex items-center justify-center py-2 px-4 border border-gray-700 rounded-md hover:border-cyan-400/30 hover:shadow-sm hover:shadow-cyan-400/20 bg-gray-800/50 text-white transition duration-200"
+                onClick={handleStarknetLogin}
               >
                 StarkNet
               </button>

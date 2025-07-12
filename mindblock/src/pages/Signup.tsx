@@ -81,6 +81,39 @@ const SignupForm = () => {
     }
   };
 
+  // Mock StarkNet registration handler
+  const handleStarknetSignup = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      // Simulate StarkNet wallet address
+      const starknetAddress = "0x" + Math.floor(Math.random() * 1e16).toString(16);
+      const starknetUser = {
+        username: `starknet_${starknetAddress.slice(-6)}`,
+        email: `${starknetAddress}@starknet.io`,
+        password: undefined,
+        provider: "starknet",
+        starknetAddress,
+      };
+      // Store in localStorage (merge with existing users)
+      const users = JSON.parse(localStorage.getItem("mindblock_users") || "[]");
+      if (users.some((u: any) => u.starknetAddress === starknetAddress)) {
+        setError("StarkNet wallet already registered");
+        setIsLoading(false);
+        return;
+      }
+      users.push(starknetUser);
+      localStorage.setItem("mindblock_users", JSON.stringify(users));
+      localStorage.setItem("mindblock_auth", JSON.stringify(starknetUser));
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      navigate("/");
+    } catch (error) {
+      setError("StarkNet signup error");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-900">
       <div className="max-w-md w-full space-y-8 p-8 bg-gray-800 rounded-lg shadow-lg">
@@ -200,6 +233,7 @@ const SignupForm = () => {
               </button>
               <button
                 type="button"
+                onClick={handleStarknetSignup}
                 className="flex items-center justify-center py-2 px-4 border border-gray-700 rounded-md hover:border-cyan-400/30 hover:shadow-sm hover:shadow-cyan-400/20 bg-gray-800/50 text-white transition duration-200"
               >
                 StarkNet
