@@ -4,8 +4,9 @@ export type User = {
   username?: string;
   email: string;
   password?: string;
-  provider?: "local" | "google";
+  provider?: "local" | "google" | "starknet";
   googleId?: string;
+  starknetAddress?: string;
 };
 
 const USERS_KEY = "mindblock_users";
@@ -71,6 +72,25 @@ export function mockGoogleAuth(): {
   saveUsers(users);
   setAuthUser(googleUser);
   return { success: true, user: googleUser };
+}
+
+// Mock StarkNet registration utility (for possible future use)
+export function mockStarknetRegister(): { success: boolean; user?: User; error?: string } {
+  const starknetAddress = "0x" + Math.floor(Math.random() * 1e16).toString(16);
+  const starknetUser: User = {
+    username: `starknet_${starknetAddress.slice(-6)}`,
+    email: `${starknetAddress}@starknet.io`,
+    provider: "starknet",
+    starknetAddress,
+  };
+  const users = getUsers();
+  if (users.some((u) => u.starknetAddress === starknetAddress)) {
+    return { success: false, error: "StarkNet wallet already registered" };
+  }
+  users.push(starknetUser);
+  saveUsers(users);
+  setAuthUser(starknetUser);
+  return { success: true, user: starknetUser };
 }
 
 export function setAuthUser(user: User) {
