@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./App.css";
 import Home from "./pages/Home";
+import Onboarding from "./pages/Onboarding";
 import SignupForm from "./pages/Signup";
 import SignIn from "./pages/SignIn";
 import LearnMore from "./pages/LearnMore";
@@ -16,6 +17,7 @@ const App = () => {
             <Route path="/signup" element={<SignupForm />} />
             <Route path="/login" element={<SignIn />} />
             <Route path="/learnmore" element={<LearnMore />} />
+            <Route path="/onboarding" element={<Onboarding />} />
           </Routes>
         </Layout>
       </BrowserRouter>
